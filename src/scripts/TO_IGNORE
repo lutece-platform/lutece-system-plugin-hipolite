@@ -1,0 +1,6 @@
+download/*/cache
+images/local/data/*/cache
+plugins/*/cache
+WEB-INF/plugins/*/cache
+WEB-INF/plugins/plugins.dat
+WEB-INF/plugins/plugin_2_2.dtd

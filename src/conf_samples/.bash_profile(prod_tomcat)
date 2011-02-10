@@ -1,0 +1,31 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+
+PATH=$PATH:$HOME/bin
+
+export CATALINA_BASE=$HOME/tomcat
+export CATALINA_HOME=/opt/apache-tomcat-5.5.26
+export JAVA_HOME=/opt/jdk1.5.0_11
+PATH=$JAVA_HOME/bin:$CATALINA_HOME/bin:$PATH
+
+############
+# Hipolite #
+############
+export SERVER_TOMCAT_PREPROD=localhost
+export USER_TOMCAT_PREPROD=pprod_tomcat
+
+export HIPOLITE_SH=$HOME/hipolite
+export TOMCAT_HOME=$HOME/tomcat
+############
+# Hipolite #
+############
+
+export PATH
+unset USERNAME
+

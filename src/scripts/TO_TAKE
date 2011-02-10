@@ -1,0 +1,11 @@
+css/
+download/
+images/local/data/
+images/local/skin/
+js/plugins/
+plugins/
+themes/
+WEB-INF/conf/plugins/themes.properties
+WEB-INF/conf/webmaster.properties
+WEB-INF/plugins/
+WEB-INF/templates/skin/

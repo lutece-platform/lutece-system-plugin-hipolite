@@ -1,0 +1,26 @@
+<div class="content-box" >
+	
+	<h2>#i18n{hipolite.message.validation.done.title}</h2>
+	
+	<p>#i18n{hipolite.message.validation.done.intro}</p>
+	
+	<#if active_synchronization ? exists && active_synchronization == true>
+		<p>
+			<img style="vertical-align:middle;" name="arrow" alt="[img_arrow]"
+				title="" src="images/admin/skin/plugins/hipolite/arrow.png" />
+			#i18n{hipolite.message.validation.done.active.true}
+		</p>
+	<#else>
+		<p>
+			<img style="vertical-align:middle;" name="clock" alt="[img_clock]"
+				title="" src="images/admin/skin/plugins/hipolite/clock.png" />
+			#i18n{hipolite.message.validation.done.active.false}
+		</p>
+
+	    <form action="jsp/admin/plugins/hipolite/DoCancelValidation.jsp">
+	        <input class="button" type="submit"
+	        	value="#i18n{hipolite.message.validation.done.button.cancel}" />
+	    </form>
+	</#if>
+	
+</div>
