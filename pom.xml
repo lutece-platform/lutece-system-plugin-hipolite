@@ -17,7 +17,7 @@
 		<repository>
 			<id>lutece</id>
 	    	<name>luteceRepository</name>
-	    	<url>http://dev.lutece.paris.fr/maven_repository</url>
+	    	<url>http://dev.lutece.paris.fr/maven_repository/plugin-hipolite</url>
 	    	<layout>default</layout>
 		</repository>
 	</repositories>
@@ -36,8 +36,8 @@
 		<jiraProjectName>HIPOLITE</jiraProjectName>
 	</properties>
     <scm>
-        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/system</connection>
-        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/system</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/portal/trunk/plugins/system</url>
+        <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/system/plugin-hipolite</connection>
+        <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/system/plugin-hipolite</developerConnection>
+        <url>http://dev.lutece.paris.fr/viewvc/portal/trunk/plugins/system/plugin-hipolite</url>
     </scm>
 </project>
