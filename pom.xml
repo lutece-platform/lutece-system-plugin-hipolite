@@ -38,6 +38,6 @@
     <scm>
         <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/system/plugin-hipolite</connection>
         <developerConnection>scm:svn:https://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/system/plugin-hipolite</developerConnection>
-        <url>http://dev.lutece.paris.fr/viewvc/portal/trunk/plugins/system/plugin-hipolite</url>
+        <url>http://dev.lutece.paris.fr/viewvc/lutece/portal/trunk/plugins/system/plugin-hipolite</url>
     </scm>
 </project>
