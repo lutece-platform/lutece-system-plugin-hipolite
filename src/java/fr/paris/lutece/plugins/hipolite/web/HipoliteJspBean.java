@@ -82,7 +82,7 @@ public class HipoliteJspBean extends PluginAdminPageJspBean
     // Properties : titles
     private static final String PROPERTY_VALIDATE_SITE_TITLE = "hipolite.message.validate.site.title";
     private static final String PROPERTY_VALIDATION_DONE_TITLE = "hipolite.message.validation.done.title";
-
+    
     // Markers
     private static final String MARK_ACTIVE_SYNCHRONIZATION = "active_synchronization";
 
