@@ -32,4 +32,13 @@
 		</admin-feature>
 	</admin-features>
 	
+	<!-- Dashboard components -->
+    <dashboard-components>
+        <dashboard-component>
+            <dashboard-component-name>DISPLAY_STATUS_HIPOLITE</dashboard-component-name>
+            <dashboard-component-class>fr.paris.lutece.plugins.hipolite.service.DisplayStatusService</dashboard-component-class>
+            <dashboard-feature-right>ALL</dashboard-feature-right>
+        </dashboard-component>
+    </dashboard-components>
+	
 </plug-in>

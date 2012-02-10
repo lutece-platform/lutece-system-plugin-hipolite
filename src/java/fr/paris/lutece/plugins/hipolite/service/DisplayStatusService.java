@@ -5,11 +5,16 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import fr.paris.lutece.portal.business.user.AdminUser;
+import fr.paris.lutece.portal.service.dashboard.DashboardComponent;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-public class DisplayStatusService 
+/**
+ * Methode pour afficher l'état de la validation du site
+ */
+public class DisplayStatusService extends DashboardComponent
 {
 	// -----------
     //  Constants
@@ -33,10 +38,11 @@ public class DisplayStatusService
 
     /**
      * Display the site validation status
-     * @param request The http request
-     * @return The html code of the status validation page
+     * @param user The current user
+     * @param request HttpServletRequest
+     * @return The dashboard data
      */
-    public static String displayStatusValidation(  HttpServletRequest request )
+    public String getDashboardData( AdminUser user, HttpServletRequest request )
     {
     	// Flag path
         String strFlagPath = AppPropertiesService.getProperty( PROPERTY_FLAG_PATH );

@@ -1,6 +1,6 @@
 <#if mode_display_status?exists && mode_display_status == '1'>
-	<div class="hipolite_display_status">
+	<span style="color: #FFFFFF;font-weight: normal;margin: 0 5px;text-decoration: none;" >
+		<img src="images/admin/skin/world.png" />
 		#i18n{hipolite.message.display.status}: <#if status?exists && status == true>#i18n{hipolite.message.display.status.on}<#else>#i18n{hipolite.message.display.status.off}</#if>
-	</div>
-	<div class="clear"></div>
+	</span>
 </#if> 
