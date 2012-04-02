@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<plug-in>
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?><plug-in>
 
 	<!-- Plugin informations -->
 	<name>hipolite</name>
 	<class>fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation</class>
 	<version>2.1.1</version>
-	<documentation></documentation>
-	<installation></installation>
-	<changes></changes>
-	<user-guide></user-guide>
+	<documentation/>
+	<installation/>
+	<changes/>
+	<user-guide/>
 	<description>hipolite.plugin.description</description>
 	<provider>hipolite.plugin.provider</provider>
 	<provider-url>http://lutece.paris.fr</provider-url>
@@ -16,7 +15,7 @@
 	<copyright>Copyright (c) 2001-2008 Mairie de Paris</copyright>
 	<core-version-dependency>
 		<min-core-version>2.3.0</min-core-version>
-		<max-core-version></max-core-version>	
+		<max-core-version/>	
 	</core-version-dependency>
 	<db-pool-required>0</db-pool-required>
 	
