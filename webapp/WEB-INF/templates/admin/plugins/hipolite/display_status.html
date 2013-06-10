@@ -1,6 +1,6 @@
 <#if mode_display_status?exists && mode_display_status == '1'>
 <span class="label <#if status?exists && status == true>label-success<#else>label-important</#if>" title="Validaton du site">
-	<i class="icon-cog icon-white"></i>&nbsp;
+	<i class="<#if status?exists && status == true>icon-play<#else>icon-pause</#if> icon-white"></i>&nbsp;
 	<#if status?exists && status == true>#i18n{hipolite.message.display.status.on}<#else>#i18n{hipolite.message.display.status.off}</#if>
 </span>
 &nbsp;

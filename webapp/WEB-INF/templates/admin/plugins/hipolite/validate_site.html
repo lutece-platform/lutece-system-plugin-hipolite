@@ -1,13 +1,17 @@
-<div class="content-box" >
-
-	<h2>#i18n{hipolite.message.validate.site.title}</h2>
-	
-	<p>#i18n{hipolite.message.validate.site.firstline}</p>
-	<p>#i18n{hipolite.message.validate.site.secondline}</p>
-
-    <form action="jsp/admin/plugins/hipolite/DoValidateSite.jsp">
-        <input class="button" type="submit"
-        	value="#i18n{hipolite.message.validate.site.button.ok}" />
-    </form>
-    
+<div class="row-fluid" >
+	<div class="span12">
+		<fieldset>
+			<legend>#i18n{hipolite.message.validate.site.title}</legend>
+				<div class="hero-unit">
+					<h2>#i18n{hipolite.message.validate.site.firstline}</h2>
+					<h2>#i18n{hipolite.message.validate.site.secondline}</h2>
+					<form class="form" action="jsp/admin/plugins/hipolite/DoValidateSite.jsp">
+						<button class="btn btn-success" type="submit" >
+							<i class="icon-play icon-white"></i>&nbsp;
+							#i18n{hipolite.message.validate.site.button.ok}
+						</button>
+					</form>
+				</div>
+		</fieldset>
+	</div>
 </div>

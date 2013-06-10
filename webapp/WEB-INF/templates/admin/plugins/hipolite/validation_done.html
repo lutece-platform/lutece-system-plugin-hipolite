@@ -1,26 +1,24 @@
-<div class="content-box" >
-	
-	<h2>#i18n{hipolite.message.validation.done.title}</h2>
-	
-	<p>#i18n{hipolite.message.validation.done.intro}</p>
-	
-	<#if active_synchronization ? exists && active_synchronization == true>
-		<p>
-			<img style="vertical-align:middle;" name="arrow" alt="[img_arrow]"
-				title="" src="images/admin/skin/plugins/hipolite/arrow.png" />
-			#i18n{hipolite.message.validation.done.active.true}
-		</p>
-	<#else>
-		<p>
-			<img style="vertical-align:middle;" name="clock" alt="[img_clock]"
-				title="" src="images/admin/skin/plugins/hipolite/clock.png" />
-			#i18n{hipolite.message.validation.done.active.false}
-		</p>
-
-	    <form action="jsp/admin/plugins/hipolite/DoCancelValidation.jsp">
-	        <input class="button" type="submit"
-	        	value="#i18n{hipolite.message.validation.done.button.cancel}" />
-	    </form>
-	</#if>
-	
+<div class="row-fluid" >
+	<div class="span12">
+		<fieldset>
+			<legend>#i18n{hipolite.message.validation.done.title}</legend>
+			<div class="hero-unit">
+				<h2>#i18n{hipolite.message.validation.done.intro}</h2>
+				<#if active_synchronization ? exists && active_synchronization == true>
+					<p>
+						<i class="icon-time"></i>&nbsp;#i18n{hipolite.message.validation.done.active.true}
+					</p>
+				<#else>
+					<p>
+						<i class="icon-time"></i>&nbsp;#i18n{hipolite.message.validation.done.active.false}
+					</p>
+					<form class="form" action="jsp/admin/plugins/hipolite/DoCancelValidation.jsp">
+						<button class="btn btn-danger" type="submit" >
+							<i class="icon-remove icon-white"></i>&nbsp;#i18n{hipolite.message.validation.done.button.cancel}
+						</button>
+					</form>
+				</#if>
+			</div>
+		</fieldset>
+	</div>
 </div>
