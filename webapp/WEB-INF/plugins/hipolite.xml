@@ -38,6 +38,11 @@
             <dashboard-component-class>fr.paris.lutece.plugins.hipolite.service.DisplayStatusService</dashboard-component-class>
             <dashboard-feature-right>ALL</dashboard-feature-right>
         </dashboard-component>
+        <dashboard-component>
+            <dashboard-component-name>CHANGE_STATUS_HIPOLITE</dashboard-component-name>
+            <dashboard-component-class>fr.paris.lutece.plugins.hipolite.service.ChangeStatusService</dashboard-component-class>
+            <dashboard-feature-right>ALL</dashboard-feature-right>
+        </dashboard-component>
     </dashboard-components>
 	
 </plug-in>

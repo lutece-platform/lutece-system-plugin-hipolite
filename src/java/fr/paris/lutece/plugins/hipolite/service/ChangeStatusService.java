@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Methode pour afficher l'état de la validation du site
  */
-public class DisplayStatusService extends DashboardComponent
+public class ChangeStatusService extends DashboardComponent
 {
     // -----------
     //  Constants
@@ -25,7 +25,7 @@ public class DisplayStatusService extends DashboardComponent
     private static final String DEFAULT_MODE_DISPLAY_STATUS = "1";
 
     // Templates
-    private static final String TEMPLATE_DISPLAY_STATUS = "/admin/plugins/hipolite/display_status.html";
+    private static final String TEMPLATE_DISPLAY_STATUS = "/admin/plugins/hipolite/change_status.html";
 
     // Properties : flags
     private static final String PROPERTY_SYNC_STATUS = "hipolite.sync_statut";

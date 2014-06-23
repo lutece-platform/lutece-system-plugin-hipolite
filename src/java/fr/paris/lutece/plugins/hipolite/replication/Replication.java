@@ -36,13 +36,13 @@ package fr.paris.lutece.plugins.hipolite.replication;
 import fr.paris.lutece.plugins.hipolite.database.DataBaseConnection;
 import fr.paris.lutece.plugins.hipolite.database.ReplicationDAO;
 import fr.paris.lutece.plugins.hipolite.exceptions.HipoliteException;
-
-import org.apache.log4j.Logger;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import java.util.ResourceBundle;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -102,55 +102,79 @@ public class Replication
     private boolean _bStarted;
 
     /**
-    * Constructs the replication object
-    */
-    public Replication(  )
+     * Constructs the replication object
+     * @param bInitFromBundle true if property is in bundle, false if in
+     *            property
+     */
+    public Replication( boolean bInitFromBundle )
     {
         // Resource bundle
-        _resourceBundle = ResourceBundle.getBundle( "hipolite" );
+        if ( bInitFromBundle )
+        {
+            _resourceBundle = ResourceBundle.getBundle( "hipolite" );
 
-        // Gets the master database information
-        _strMasterDriver = getProperty( PROPERTY_JDBC_MASTER_DRIVER );
-        _strMasterUrl = getProperty( PROPERTY_JDBC_MASTER_URL );
-        _strMasterUser = getProperty( PROPERTY_JDBC_MASTER_USER );
-        _strMasterPwd = getProperty( PROPERTY_JDBC_MASTER_PWD );
+            // Gets the master database information
+            _strMasterDriver = getProperty( PROPERTY_JDBC_MASTER_DRIVER );
+            _strMasterUrl = getProperty( PROPERTY_JDBC_MASTER_URL );
+            _strMasterUser = getProperty( PROPERTY_JDBC_MASTER_USER );
+            _strMasterPwd = getProperty( PROPERTY_JDBC_MASTER_PWD );
 
-        // Gets the slave database information
-        _strSlaveDriver = getProperty( PROPERTY_JDBC_SLAVE_DRIVER );
-        _strSlaveUrl = getProperty( PROPERTY_JDBC_SLAVE_URL );
-        _strSlaveUser = getProperty( PROPERTY_JDBC_SLAVE_USER );
-        _strSlavePwd = getProperty( PROPERTY_JDBC_SLAVE_PWD );
+            // Gets the slave database information
+            _strSlaveDriver = getProperty( PROPERTY_JDBC_SLAVE_DRIVER );
+            _strSlaveUrl = getProperty( PROPERTY_JDBC_SLAVE_URL );
+            _strSlaveUser = getProperty( PROPERTY_JDBC_SLAVE_USER );
+            _strSlavePwd = getProperty( PROPERTY_JDBC_SLAVE_PWD );
 
-        // Gets the replication properties
-        _strMaxTimeout = getProperty( PROPERTY_REPLICATION_MAXTIMEOUT );
-        _strMaxDelay = getProperty( PROPERTY_REPLICATION_MAXDELAY );
+            // Gets the replication properties
+            _strMaxTimeout = getProperty( PROPERTY_REPLICATION_MAXTIMEOUT );
+            _strMaxDelay = getProperty( PROPERTY_REPLICATION_MAXDELAY );
+        }
+        else
+        {
+
+            // Gets the master database information
+            _strMasterDriver = AppPropertiesService.getProperty( PROPERTY_JDBC_MASTER_DRIVER );
+            _strMasterUrl = AppPropertiesService.getProperty( PROPERTY_JDBC_MASTER_URL );
+            _strMasterUser = AppPropertiesService.getProperty( PROPERTY_JDBC_MASTER_USER );
+            _strMasterPwd = AppPropertiesService.getProperty( PROPERTY_JDBC_MASTER_PWD );
+
+            // Gets the slave database information
+            _strSlaveDriver = AppPropertiesService.getProperty( PROPERTY_JDBC_SLAVE_DRIVER );
+            _strSlaveUrl = AppPropertiesService.getProperty( PROPERTY_JDBC_SLAVE_URL );
+            _strSlaveUser = AppPropertiesService.getProperty( PROPERTY_JDBC_SLAVE_USER );
+            _strSlavePwd = AppPropertiesService.getProperty( PROPERTY_JDBC_SLAVE_PWD );
+
+            // Gets the replication properties
+            _strMaxTimeout = AppPropertiesService.getProperty( PROPERTY_REPLICATION_MAXTIMEOUT );
+            _strMaxDelay = AppPropertiesService.getProperty( PROPERTY_REPLICATION_MAXDELAY );
+        }
     }
 
     /**
-    * Inits the replication
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    public void init(  ) throws HipoliteException
+     * Inits the replication
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    public void init( ) throws HipoliteException
     {
         // Creates the master database connection
         _dbConnection = new DataBaseConnection( _strMasterDriver, _strMasterUrl, _strMasterUser, _strMasterPwd );
-        _masterConnection = _dbConnection.getConnection(  );
+        _masterConnection = _dbConnection.getConnection( );
 
         // Creates the slave database connection
         _dbConnection = new DataBaseConnection( _strSlaveDriver, _strSlaveUrl, _strSlaveUser, _strSlavePwd );
-        _slaveConnection = _dbConnection.getConnection(  );
+        _slaveConnection = _dbConnection.getConnection( );
 
         // Creates the replication DAO (used to execute requests)
-        _replicationDao = new ReplicationDAO(  );
+        _replicationDao = new ReplicationDAO( );
     }
 
     /**
-    * Starts the replication process
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    public void start(  ) throws HipoliteException
+     * Starts the replication process
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    public void start( ) throws HipoliteException
     {
         // If the connections are active and the replication is not already started
         if ( !_bStarted && ( _masterConnection != null ) && ( _slaveConnection != null ) )
@@ -159,19 +183,19 @@ public class Replication
             _bStarted = true;
 
             // Locks the master tables
-            lockMasterTables(  );
+            lockMasterTables( );
 
             // Replicates the master to the slave
-            replicate(  );
+            replicate( );
 
             // Unlocks the master tables
-            unlockMasterTables(  );
+            unlockMasterTables( );
 
             // Resets the master
-            resetMaster(  );
+            resetMaster( );
 
             // Resets the slave
-            resetSlave(  );
+            resetSlave( );
 
             // Updates the boolean state
             _bStarted = false;
@@ -179,11 +203,11 @@ public class Replication
     }
 
     /**
-    * Closes the replication
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    public void close(  ) throws HipoliteException
+     * Closes the replication
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    public void close( ) throws HipoliteException
     {
         // Closes the master database connection
         _dbConnection.closeConnection( _masterConnection );
@@ -193,11 +217,11 @@ public class Replication
     }
 
     /**
-    * Replicates the master to the slave
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    private void replicate(  ) throws HipoliteException
+     * Replicates the master to the slave
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    private void replicate( ) throws HipoliteException
     {
         // Tries to start the replication with START SLAVE request on slave database
         try
@@ -223,24 +247,24 @@ public class Replication
                 }
                 catch ( SQLException sqle3 )
                 {
-                    _logger.error( sqle3.getMessage(  ) );
-                    throw new HipoliteException( sqle3.getMessage(  ) );
+                    _logger.error( sqle3.getMessage( ) );
+                    throw new HipoliteException( sqle3.getMessage( ) );
                 }
             }
         }
 
         // Checks the master log position
-        int nMasterPos = getMasterLogPosition(  );
+        int nMasterPos = getMasterLogPosition( );
 
-        if ( _logger.isDebugEnabled(  ) )
+        if ( _logger.isDebugEnabled( ) )
         {
             _logger.debug( "Master position : " + nMasterPos );
         }
 
         // Checks the slave log position
-        int nSlavePos = getSlaveLogPosition(  );
+        int nSlavePos = getSlaveLogPosition( );
 
-        if ( _logger.isDebugEnabled(  ) )
+        if ( _logger.isDebugEnabled( ) )
         {
             _logger.debug( "Slave position : " + nSlavePos );
         }
@@ -251,8 +275,8 @@ public class Replication
 
         int nCounter = 0;
 
-        if ( ( _strMaxTimeout != null ) && ( !_strMaxTimeout.equals( "" ) ) && ( !_strMaxTimeout.equals( "0" ) ) &&
-                ( _strMaxDelay != null ) && ( !_strMaxDelay.equals( "" ) ) && ( !_strMaxDelay.equals( "0" ) ) )
+        if ( ( _strMaxTimeout != null ) && ( !_strMaxTimeout.equals( "" ) ) && ( !_strMaxTimeout.equals( "0" ) )
+                && ( _strMaxDelay != null ) && ( !_strMaxDelay.equals( "" ) ) && ( !_strMaxDelay.equals( "0" ) ) )
         {
             nCounter = Integer.parseInt( _strMaxTimeout ) / Integer.parseInt( _strMaxDelay );
         }
@@ -264,9 +288,9 @@ public class Replication
             addDelay( _strMaxDelay );
 
             // Updates the slave log position
-            nSlavePos = getSlaveLogPosition(  );
+            nSlavePos = getSlaveLogPosition( );
 
-            if ( _logger.isDebugEnabled(  ) )
+            if ( _logger.isDebugEnabled( ) )
             {
                 _logger.debug( "Slave position : " + nSlavePos );
             }
@@ -289,14 +313,15 @@ public class Replication
         }
         catch ( SQLException sqle )
         {
-            _logger.error( sqle.getMessage(  ) );
-            throw new HipoliteException( sqle.getMessage(  ) );
+            _logger.error( sqle.getMessage( ) );
+            throw new HipoliteException( sqle.getMessage( ) );
         }
     }
 
     /**
-     * Returns the value of the key parameter contained in the configuration file
-     *
+     * Returns the value of the key parameter contained in the configuration
+     * file
+     * 
      * @param key String
      * @return String value
      */
@@ -314,11 +339,11 @@ public class Replication
     }
 
     /**
-    * Locks the master tables
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    private void lockMasterTables(  ) throws HipoliteException
+     * Locks the master tables
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    private void lockMasterTables( ) throws HipoliteException
     {
         try
         {
@@ -326,17 +351,17 @@ public class Replication
         }
         catch ( SQLException sqle )
         {
-            _logger.error( sqle.getMessage(  ) );
-            throw new HipoliteException( sqle.getMessage(  ) );
+            _logger.error( sqle.getMessage( ) );
+            throw new HipoliteException( sqle.getMessage( ) );
         }
     }
 
     /**
-    * Unlocks the master tables
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    private void unlockMasterTables(  ) throws HipoliteException
+     * Unlocks the master tables
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    private void unlockMasterTables( ) throws HipoliteException
     {
         try
         {
@@ -344,17 +369,17 @@ public class Replication
         }
         catch ( SQLException sqle )
         {
-            _logger.error( sqle.getMessage(  ) );
-            throw new HipoliteException( sqle.getMessage(  ) );
+            _logger.error( sqle.getMessage( ) );
+            throw new HipoliteException( sqle.getMessage( ) );
         }
     }
 
     /**
-    * Resets the master
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    private void resetMaster(  ) throws HipoliteException
+     * Resets the master
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    private void resetMaster( ) throws HipoliteException
     {
         try
         {
@@ -362,17 +387,17 @@ public class Replication
         }
         catch ( SQLException sqle )
         {
-            _logger.error( sqle.getMessage(  ) );
-            throw new HipoliteException( sqle.getMessage(  ) );
+            _logger.error( sqle.getMessage( ) );
+            throw new HipoliteException( sqle.getMessage( ) );
         }
     }
 
     /**
-    * Resets the slave
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
-    private void resetSlave(  ) throws HipoliteException
+     * Resets the slave
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
+    private void resetSlave( ) throws HipoliteException
     {
         try
         {
@@ -380,18 +405,18 @@ public class Replication
         }
         catch ( SQLException sqle )
         {
-            _logger.error( sqle.getMessage(  ) );
-            throw new HipoliteException( sqle.getMessage(  ) );
+            _logger.error( sqle.getMessage( ) );
+            throw new HipoliteException( sqle.getMessage( ) );
         }
     }
 
     /**
-    * Gets the master log position
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    * @return The master log position
-    */
-    private int getMasterLogPosition(  ) throws HipoliteException
+     * Gets the master log position
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     * @return The master log position
+     */
+    private int getMasterLogPosition( ) throws HipoliteException
     {
         int position = 0;
 
@@ -401,20 +426,20 @@ public class Replication
         }
         catch ( SQLException sqle )
         {
-            _logger.error( sqle.getMessage(  ) );
-            throw new HipoliteException( sqle.getMessage(  ) );
+            _logger.error( sqle.getMessage( ) );
+            throw new HipoliteException( sqle.getMessage( ) );
         }
 
         return position;
     }
 
     /**
-    * Gets the slave log position
-    *
-    * @throws HipoliteException If an Hipolite exception occurred
-    * @return The slave log position
-    */
-    private int getSlaveLogPosition(  ) throws HipoliteException
+     * Gets the slave log position
+     * 
+     * @throws HipoliteException If an Hipolite exception occurred
+     * @return The slave log position
+     */
+    private int getSlaveLogPosition( ) throws HipoliteException
     {
         int position = 0;
 
@@ -424,34 +449,34 @@ public class Replication
         }
         catch ( SQLException sqle )
         {
-            _logger.error( sqle.getMessage(  ) );
-            throw new HipoliteException( sqle.getMessage(  ) );
+            _logger.error( sqle.getMessage( ) );
+            throw new HipoliteException( sqle.getMessage( ) );
         }
 
         return position;
     }
 
     /**
-    * Adds a delay for the replication
-    *
-    * @param delay String
-    * @throws HipoliteException If an Hipolite exception occurred
-    */
+     * Adds a delay for the replication
+     * 
+     * @param delay String
+     * @throws HipoliteException If an Hipolite exception occurred
+     */
     private void addDelay( String delay ) throws HipoliteException
     {
         try
         {
-            Thread.sleep( new Long( delay ).longValue(  ) );
+            Thread.sleep( new Long( delay ).longValue( ) );
         }
         catch ( NumberFormatException nfe )
         {
-            _logger.error( nfe.getMessage(  ) );
-            throw new HipoliteException( nfe.getMessage(  ) );
+            _logger.error( nfe.getMessage( ) );
+            throw new HipoliteException( nfe.getMessage( ) );
         }
         catch ( InterruptedException ie )
         {
-            _logger.error( ie.getMessage(  ) );
-            throw new HipoliteException( ie.getMessage(  ) );
+            _logger.error( ie.getMessage( ) );
+            throw new HipoliteException( ie.getMessage( ) );
         }
     }
 }

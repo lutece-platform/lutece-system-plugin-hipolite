@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.hipolite.web;
 
+import fr.paris.lutece.plugins.hipolite.enumeration.ReplicationStatutEnum;
+import fr.paris.lutece.plugins.hipolite.replication.ReplicationDaemon;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
@@ -45,7 +48,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import java.util.Date;
 import java.util.HashMap;
 
@@ -67,6 +69,9 @@ public class HipoliteJspBean extends PluginAdminPageJspBean
     // Messages (AdminMessageService)
     private static final String MESSAGE_VALIDATE_SITE_WARNING = "hipolite.message.validate.site.warning";
     private static final String MESSAGE_VALIDATE_SITE_ERROR = "hipolite.message.do.validate.site.error";
+    private static final String MESSAGE_SYNC_SITE_WARNING = "hipolite.message.sync.site.warning";
+    private static final String MESSAGE_SYNC_SITE_ERROR = "hipolite.message.sync.site.error";
+    private static final String MESSAGE_SYNC_SITE_INFO = "hipolite.message.sync.site.info";
     private static final String MESSAGE_CANCEL_VALIDATION_INFO = "hipolite.message.cancel.validation.info";
     private static final String MESSAGE_CANCEL_VALIDATION_ERROR = "hipolite.message.cancel.validation.error";
 
@@ -82,16 +87,18 @@ public class HipoliteJspBean extends PluginAdminPageJspBean
     // Properties : titles
     private static final String PROPERTY_VALIDATE_SITE_TITLE = "hipolite.message.validate.site.title";
     private static final String PROPERTY_VALIDATION_DONE_TITLE = "hipolite.message.validation.done.title";
-    
+    private static final String PROPERTY_SYNC_STATUS = "hipolite.sync_statut";
+
     // Markers
     private static final String MARK_ACTIVE_SYNCHRONIZATION = "active_synchronization";
 
     // JSP definition
     private static final String JSP_VALIDATE_SITE = "jsp/admin/plugins/hipolite/ValidateSite.jsp";
+    private static final String JSP_DO_SYNCHRONIZE_SITE = "jsp/admin/plugins/hipolite/DoSynchronizeSite.jsp";
 
     /**
      * Displays the site validation page
-     *
+     * 
      * @param request The http request
      * @return The html code of the validation page
      */
@@ -109,13 +116,13 @@ public class HipoliteJspBean extends PluginAdminPageJspBean
         File activeFile = new File( strFlagPath + "/" + strActiveFlagFile );
 
         // Controls if the validation has already be done
-        if ( validationFile.exists(  ) )
+        if ( validationFile.exists( ) )
         {
             setPageTitleProperty( PROPERTY_VALIDATION_DONE_TITLE );
 
-            HashMap<Object, Object> model = new HashMap<Object, Object>(  );
+            HashMap<Object, Object> model = new HashMap<Object, Object>( );
 
-            if ( activeFile.exists(  ) )
+            if ( activeFile.exists( ) )
             {
                 model.put( MARK_ACTIVE_SYNCHRONIZATION, true );
             }
@@ -124,25 +131,26 @@ public class HipoliteJspBean extends PluginAdminPageJspBean
                 model.put( MARK_ACTIVE_SYNCHRONIZATION, false );
             }
 
-            HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_VALIDATION_DONE, getLocale(  ), model );
+            HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_VALIDATION_DONE, getLocale( ), model );
 
-            return getAdminPage( templateList.getHtml(  ) );
+            return getAdminPage( templateList.getHtml( ) );
         }
         else
         {
             setPageTitleProperty( PROPERTY_VALIDATE_SITE_TITLE );
 
-            HashMap<Object, Object> model = new HashMap<Object, Object>(  );
-            HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_VALIDATE_SITE, getLocale(  ), model );
+            HashMap<Object, Object> model = new HashMap<Object, Object>( );
+            HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_VALIDATE_SITE, getLocale( ), model );
 
-            return getAdminPage( templateList.getHtml(  ) );
+            return getAdminPage( templateList.getHtml( ) );
         }
     }
 
     /**
-     * Processes the site validation. Creation of a flag file which indicates that
+     * Processes the site validation. Creation of a flag file which indicates
+     * that
      * the site has been validated and is ready to be toggled in production.
-     *
+     * 
      * @param request The http request
      * @return the jsp url of the confirm message
      */
@@ -156,31 +164,77 @@ public class HipoliteJspBean extends PluginAdminPageJspBean
         try
         {
             // Creates the flag file (and parent directories)
-            file.getParentFile(  ).mkdirs(  );
-            file.createNewFile(  );
+            file.getParentFile( ).mkdirs( );
+            file.createNewFile( );
 
-            BufferedWriter out = new BufferedWriter( new FileWriter( file.getPath(  ), true ) );
+            BufferedWriter out = new BufferedWriter( new FileWriter( file.getPath( ), true ) );
             out.write( "FICHIER TEMOIN DE VALIDATION DU SITE" + STR_NEWLINE );
-            out.write( "AppUser : " + getUser(  ).getFirstName(  ) + " " + getUser(  ).getLastName(  ) + STR_NEWLINE );
-            out.write( "Date de validation : " + new Date(  ) + STR_NEWLINE );
-            out.write( "Adresse IP : " + request.getRemoteAddr(  ) + STR_NEWLINE );
-            out.write( "Host : " + request.getRemoteHost(  ) + STR_NEWLINE );
-            out.close(  );
+            out.write( "AppUser : " + getUser( ).getFirstName( ) + " " + getUser( ).getLastName( ) + STR_NEWLINE );
+            out.write( "Date de validation : " + new Date( ) + STR_NEWLINE );
+            out.write( "Adresse IP : " + request.getRemoteAddr( ) + STR_NEWLINE );
+            out.write( "Host : " + request.getRemoteHost( ) + STR_NEWLINE );
+            out.close( );
 
             return AdminMessageService.getMessageUrl( request, MESSAGE_VALIDATE_SITE_WARNING, JSP_VALIDATE_SITE,
-                AdminMessage.TYPE_CONFIRMATION );
+                    AdminMessage.TYPE_CONFIRMATION );
         }
         catch ( IOException ioe )
         {
-            AppLogService.error( ioe.getMessage(  ), ioe );
+            AppLogService.error( ioe.getMessage( ), ioe );
 
             return AdminMessageService.getMessageUrl( request, MESSAGE_VALIDATE_SITE_ERROR, AdminMessage.TYPE_ERROR );
         }
     }
 
     /**
+     * Processes the site validation. Creation of a flag file which indicates
+     * that
+     * the site has been validated and is ready to be toggled in production.
+     * 
+     * @param request The http request
+     * @return the jsp url of the confirm message
+     */
+    public String getSynchronizeSite( HttpServletRequest request )
+    {
+        String strStatut = DatastoreService.getDataValue( PROPERTY_SYNC_STATUS,
+                ReplicationStatutEnum.NO_REPLICATION.getStatut( ) );
+
+        if ( ReplicationStatutEnum.IN_PROGRESS.getStatut( ).equals( strStatut ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_SYNC_SITE_ERROR, AdminMessage.TYPE_ERROR );
+        }
+
+        return AdminMessageService.getMessageUrl( request, MESSAGE_SYNC_SITE_WARNING, JSP_DO_SYNCHRONIZE_SITE,
+                AdminMessage.TYPE_CONFIRMATION );
+    }
+
+    /**
+     * Processes the site validation. Creation of a flag file which indicates
+     * that
+     * the site has been validated and is ready to be toggled in production.
+     * 
+     * @param request The http request
+     * @return the jsp url of the confirm message
+     */
+    public String doSynchronizeSite( HttpServletRequest request )
+    {
+        String strStatut = DatastoreService.getDataValue( PROPERTY_SYNC_STATUS,
+                ReplicationStatutEnum.NO_REPLICATION.getStatut( ) );
+
+        if ( ReplicationStatutEnum.IN_PROGRESS.getStatut( ).equals( strStatut ) )
+        {
+            return AdminMessageService.getMessageUrl( request, MESSAGE_SYNC_SITE_ERROR, AdminMessage.TYPE_ERROR );
+        }
+
+        Thread t = new Thread( new ReplicationDaemon( ) );
+        t.start( );
+        return AdminMessageService.getMessageUrl( request, MESSAGE_SYNC_SITE_INFO, null, null,
+                "jsp/admin/AdminMenu.jsp", "_self", AdminMessage.TYPE_INFO );
+    }
+
+    /**
      * Cancels the validation of the site
-     *
+     * 
      * @param request The http request
      * @return the jsp url of the confirm message
      */
@@ -198,18 +252,18 @@ public class HipoliteJspBean extends PluginAdminPageJspBean
         File activeFile = new File( strFlagPath + "/" + strActiveFlagFile );
 
         // Controls if the synchronization is not active
-        if ( !activeFile.exists(  ) )
+        if ( !activeFile.exists( ) )
         {
             // Deletes the flag file
-            validationFile.delete(  );
+            validationFile.delete( );
 
             return AdminMessageService.getMessageUrl( request, MESSAGE_CANCEL_VALIDATION_INFO, JSP_VALIDATE_SITE,
-                AdminMessage.TYPE_INFO );
+                    AdminMessage.TYPE_INFO );
         }
         else
         {
             return AdminMessageService.getMessageUrl( request, MESSAGE_CANCEL_VALIDATION_ERROR, JSP_VALIDATE_SITE,
-                AdminMessage.TYPE_ERROR );
+                    AdminMessage.TYPE_ERROR );
         }
     }
 }

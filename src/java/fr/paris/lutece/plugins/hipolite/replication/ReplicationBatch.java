@@ -49,48 +49,61 @@ public final class ReplicationBatch
     /**
      * Empty constructor (private)
      */
-    private ReplicationBatch(  )
+    private ReplicationBatch( )
     {
         // Empty constructor
     }
 
     /**
-    * Main (starts the replication process)
-    *
-    * @param args String[]
-    */
+     * Main (starts the replication process)
+     * 
+     * @param args String[]
+     */
     public static void main( String[] args )
+    {
+        int status = launchReplication( true );
+        // Exits
+        System.exit( status );
+    }
+
+    /**
+     * Launch replication
+     * @param bInitFromBundle true if property is in bundle, false if in
+     *            property
+     * @return the status code of replication
+     */
+    public static int launchReplication( boolean bInitFromBundle )
     {
         // Initialization
         int status = 0;
 
         // Time before
-        long timeBefore = System.currentTimeMillis(  );
+        long timeBefore = System.currentTimeMillis( );
 
         // Launches the replication
-        Replication replication = new Replication(  );
+        Replication replication = new Replication( bInitFromBundle );
 
         try
         {
-            replication.init(  );
-            replication.start(  );
-            replication.close(  );
+            replication.init( );
+            replication.start( );
+            replication.close( );
         }
         catch ( HipoliteException he )
         {
+            logger.error( he.getLocalizedMessage( ) );
             status = 1;
         }
 
         // Time after
-        long timeAfter = System.currentTimeMillis(  );
+        long timeAfter = System.currentTimeMillis( );
         long time = timeAfter - timeBefore;
 
-        if ( logger.isDebugEnabled(  ) )
+        if ( logger.isDebugEnabled( ) )
         {
             logger.debug( "Time : " + time + " ms" );
         }
 
-        // Exits
-        System.exit( status );
+        return status;
     }
 }

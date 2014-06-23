@@ -1,0 +1,20 @@
+<div class="well">
+<img src="images/admin/skin/plugins/hipolite/hipolite.png" width="24" height="24" />
+<#if mode_display_status?exists && mode_display_status == '1'>
+<span class="label 
+	<#if status == '0'>label-success
+	<#elseif status == '1'>label-warning
+	<#elseif status == '3'>label-success
+	<#else>label-danger</#if>">
+	<#if status == "0">#i18n{hipolite.message.display.status.no_replication}
+	<#elseif status == "1">#i18n{hipolite.message.display.status.in_progress}
+	<#elseif status == "2">#i18n{hipolite.message.display.status.on_error}
+	<#else>#i18n{hipolite.message.display.status.on_success}</#if>
+</span>
+<#if status != "1">
+	<form action="jsp/admin/plugins/hipolite/GetSynchronizeSite.jsp">
+    	<button type="submit" class="btn btn-primary btn-small"><i class="icon-white icon-play"></i>&nbsp;#i18n{hipolite.message.sync.site.title}</button> 
+   </form>
+</#if>
+</#if> 
+</div>
